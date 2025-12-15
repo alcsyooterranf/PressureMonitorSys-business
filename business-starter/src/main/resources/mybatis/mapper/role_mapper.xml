@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.IRoleMapper">
+    <resultMap id="roleResultMap" type="org.pms.infrastructure.mapper.po.RolePO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="deleteTime" column="delete_time"/>
+        <result property="deleteBy" column="delete_by"/>
+        <result property="removed" column="is_removed" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <resultMap id="roleInfoQueryViewResultMap" type="org.pms.api.dto.resp.RoleInfoQueryView">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+    </resultMap>
+
+    <select id="queryRoleCount" resultType="java.lang.Long">
+        select count(*)
+        from pressuremonitorsys.r_role
+        where is_removed = 0
+        <if test="startTime != null">
+            and date_format(create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            and date_format(create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+    </select>
+
+    <select id="queryRoleList" resultMap="roleInfoQueryViewResultMap">
+        select id, name, create_time, create_by, update_time, update_by
+        from pressuremonitorsys.r_role
+        where is_removed = 0
+        <if test="startTime != null">
+            and date_format(create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            and date_format(create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+        order by create_time desc
+        <if test="pageBegin != null and pageEnd != null">
+            limit #{pageBegin}, #{pageEnd}
+        </if>
+    </select>
+</mapper>

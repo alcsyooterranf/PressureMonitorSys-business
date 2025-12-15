@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.IPipelineMapper">
+    <resultMap id="productResultMap" type="org.pms.infrastructure.mapper.po.PipelinePO">
+        <id column="id" property="id"/>
+        <result column="product_sn" property="productSN"/>
+        <result column="product_name" property="productName"/>
+        <result column="customer_account" property="customerAccount"/>
+        <result column="location" property="location"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="delete_time" property="deleteTime"/>
+        <result column="delete_by" property="deleteBy"/>
+        <result column="is_removed" property="removed" javaType="java.lang.Boolean"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <sql id="commonQueryColumns">
+        SELECT *
+        FROM pressuremonitorsys.t_product
+    </sql>
+
+    <select id="queryPipelineCount" resultType="java.lang.Long">
+        select count(*)
+        from pressuremonitorsys.t_product
+        where is_removed = 0
+        <if test="productSN != null and productSN != ''">
+            AND product_sn = #{productSN}
+        </if>
+        <if test="customerAccount != null and customerAccount != ''">
+            AND customer_account = #{customerAccount}
+        </if>
+        <if test="startTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+    </select>
+
+    <select id="queryPipelineList" resultMap="productResultMap">
+        <include refid="commonQueryColumns"/>
+        WHERE is_removed = 0
+        <if test="productSN != null and productSN != ''">
+            AND product_sn = #{productSN}
+        </if>
+        <if test="customerAccount != null and customerAccount != ''">
+            AND customer_account = #{customerAccount}
+        </if>
+        <if test="startTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+        ORDER BY create_time DESC
+        <if test="pageBegin != null and pageEnd != null">
+            limit #{pageBegin}, #{pageEnd}
+        </if>
+    </select>
+
+    <update id="deleteProductById">
+        UPDATE pressuremonitorsys.t_product
+        SET is_removed  = 1,
+            delete_time = now(),
+            delete_by   = #{operatorName}
+        WHERE id = #{id}
+    </update>
+
+    <select id="queryByIdList" resultMap="productResultMap">
+        <include refid="commonQueryColumns"/>
+        WHERE is_removed = 0
+        <if test="ids != null and ids.size() > 0">
+            AND id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateProduct">
+        UPDATE pressuremonitorsys.t_product
+        SET product_name = #{pipelineUpdateReq.productName},
+            location     = #{pipelineUpdateReq.location},
+            update_time  = now(),
+            update_by    = #{operatorName},
+            remark       = #{pipelineUpdateReq.remark}
+        WHERE is_removed = 0
+          AND id = #{pipelineUpdateReq.id}
+    </update>
+
+    <update id="updateLocationById">
+        UPDATE pressuremonitorsys.t_product
+        SET location    = #{location},
+            update_time = now(),
+            update_by   = #{operatorName}
+        WHERE is_removed = 0
+          AND id = #{id}
+    </update>
+
+    <insert id="insertProduct" parameterType="org.pms.infrastructure.mapper.po.PipelinePO" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO pressuremonitorsys.t_product
+        (product_sn, product_name, customer_account, location, create_time, update_time, update_by, delete_time,
+         delete_by, is_removed, remark)
+        VALUES (#{productSN}, #{productName}, #{customerAccount}, #{location},
+                now(), #{updateTime}, #{updateBy}, #{deleteTime}, #{deleteBy},
+                0, #{remark})
+    </insert>
+
+    <select id="queryIdsList" resultType="java.lang.Long">
+        SELECT id
+        FROM pressuremonitorsys.t_product
+        WHERE is_removed = 0
+    </select>
+</mapper>

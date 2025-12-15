@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.IUserRoleMapper">
+    <resultMap id="userRoleResultMap" type="org.pms.infrastructure.mapper.po.UserRolePO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+    </resultMap>
+
+    <insert id="insertUserRole" parameterType="org.pms.infrastructure.mapper.po.UserRolePO">
+        INSERT INTO pressuremonitorsys.r_user_role (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
+        ON DUPLICATE KEY UPDATE role_id = #{roleId}
+    </insert>
+
+    <update id="updateUserRoleByUserId">
+        update pressuremonitorsys.r_user_role
+        set role_id = #{roleId}
+        where user_id = #{userId}
+    </update>
+</mapper>

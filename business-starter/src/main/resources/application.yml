@@ -1,0 +1,5 @@
+spring:
+  config:
+    name: PressureMonitorSys-backend-app
+  profiles:
+    active: $profileActive$

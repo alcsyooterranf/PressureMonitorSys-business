@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.IDeviceMapper">
+    <resultMap id="deviceResultMap" type="org.pms.infrastructure.mapper.po.DevicePO">
+        <id column="id" property="id"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_sn" property="productSN"/>
+        <result column="device_sn" property="deviceSN"/>
+        <result column="protocol_sn" property="protocolSN"/>
+        <result column="status" property="status"/>
+        <result column="template_id" property="templateId"/>
+        <result column="customer_account" property="customerAccount"/>
+        <result column="temperature_upper_bound" property="temperatureUpperBound"/>
+        <result column="temperature_lower_bound" property="temperatureLowerBound"/>
+        <result column="voltage_upper_bound" property="voltageUpperBound"/>
+        <result column="voltage_lower_bound" property="voltageLowerBound"/>
+        <result column="pressure_upper_bound" property="pressureUpperBound"/>
+        <result column="pressure_lower_bound" property="pressureLowerBound"/>
+        <result column="local_atmospheric_pressure" property="localAtmosphericPressure"/>
+        <result column="longitude" property="longitude"/>
+        <result column="latitude" property="latitude"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="delete_time" property="deleteTime"/>
+        <result column="delete_by" property="deleteBy"/>
+        <result column="is_binded" property="binded" javaType="java.lang.Boolean"/>
+        <result column="is_removed" property="removed" javaType="java.lang.Boolean"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <sql id="commonQueryColumns">
+        SELECT *
+        FROM pressuremonitorsys.t_device
+    </sql>
+
+    <select id="queryDeviceCount" resultType="java.lang.Long">
+        select count(*)
+        from pressuremonitorsys.t_device
+        where is_removed = 0
+        <if test="protocolSN != null and protocolSN != ''">
+            AND protocol_sn = #{protocolSN}
+        </if>
+        <if test="deviceSN != null and deviceSN != ''">
+            AND device_sn = #{deviceSN}
+        </if>
+        <if test="customerAccount != null and customerAccount != ''">
+            AND customer_account = #{customerAccount}
+        </if>
+        <if test="binded != null">
+            AND is_binded = #{binded}
+        </if>
+        <if test="startTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+    </select>
+
+    <select id="queryDeviceList" resultMap="deviceResultMap">
+        <include refid="commonQueryColumns"/>
+        WHERE is_removed = 0
+        <if test="protocolSN != null and protocolSN != ''">
+            AND protocol_sn = #{protocolSN}
+        </if>
+        <if test="deviceSN != null and deviceSN != ''">
+            AND device_sn = #{deviceSN}
+        </if>
+        <if test="customerAccount != null and customerAccount != ''">
+            AND customer_account = #{customerAccount}
+        </if>
+        <if test="binded != null">
+            AND is_binded = #{binded}
+        </if>
+        <if test="startTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+        ORDER BY create_time DESC
+        <if test="pageBegin != null and pageEnd != null">
+            limit #{pageBegin}, #{pageEnd}
+        </if>
+    </select>
+
+    <update id="deleteDeviceById">
+        UPDATE pressuremonitorsys.t_device
+        SET is_removed  = 1,
+            is_binded   = 0,
+            delete_time = now(),
+            delete_by   = #{operatorName}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateDevice">
+        UPDATE pressuremonitorsys.t_device
+        SET device_sn                  = #{deviceUpdateReq.deviceSN},
+            status                     = #{deviceUpdateReq.status},
+            template_id                = #{deviceUpdateReq.templateId},
+            temperature_upper_bound    = #{deviceUpdateReq.temperatureUpperBound},
+            temperature_lower_bound    = #{deviceUpdateReq.temperatureLowerBound},
+            voltage_upper_bound        = #{deviceUpdateReq.voltageUpperBound},
+            voltage_lower_bound        = #{deviceUpdateReq.voltageLowerBound},
+            pressure_upper_bound       = #{deviceUpdateReq.pressureUpperBound},
+            pressure_lower_bound       = #{deviceUpdateReq.pressureLowerBound},
+            local_atmospheric_pressure = #{deviceUpdateReq.localAtmosphericPressure},
+            longitude                  = #{deviceUpdateReq.longitude},
+            latitude                   = #{deviceUpdateReq.latitude},
+            update_time                = now(),
+            update_by                  = #{operatorName},
+            remark                     = #{deviceUpdateReq.remark}
+        WHERE is_removed = 0
+          AND is_binded = 1
+          AND id = #{deviceUpdateReq.id}
+    </update>
+
+    <select id="queryByIdList" resultMap="deviceResultMap">
+        <include refid="commonQueryColumns"/>
+        WHERE is_removed = 0 AND is_binded = 1
+        <if test="ids != null and ids.size() > 0">
+            AND id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateLngAndLatByPipelineId">
+        UPDATE pressuremonitorsys.t_device
+        SET longitude   = #{longitude},
+            latitude    = #{latitude},
+            update_time = now(),
+            update_by   = #{operatorName}
+        WHERE is_removed = 0
+          AND is_binded = 1
+          AND product_id = #{pipelineId}
+    </update>
+
+    <update id="unbindDeviceById">
+        UPDATE pressuremonitorsys.t_device
+        SET is_binded   = 0,
+            update_time = now(),
+            update_by   = #{operatorName}
+        WHERE id = #{id}
+          AND is_removed = 0
+    </update>
+
+    <update id="unbindDeviceByPipelineId">
+        UPDATE pressuremonitorsys.t_device
+        SET is_binded   = 0,
+            update_time = now(),
+            update_by   = #{operatorName}
+        WHERE product_id = #{pipelineId}
+          AND is_removed = 0
+    </update>
+
+    <select id="queryParameterLimitsBySN" resultMap="deviceResultMap">
+        <include refid="commonQueryColumns"/>
+        WHERE is_removed = 0 AND is_binded = 1
+        AND device_sn = #{deviceSN}
+    </select>
+
+    <insert id="insertDevice" parameterType="org.pms.infrastructure.mapper.po.DevicePO" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO pressuremonitorsys.t_device
+        (product_id, product_sn, device_sn, protocol_sn, status, template_id, customer_account, temperature_upper_bound,
+         temperature_lower_bound, voltage_upper_bound, voltage_lower_bound, pressure_upper_bound, pressure_lower_bound,
+         local_atmospheric_pressure, longitude, latitude, create_time, update_time, update_by, delete_time,
+         delete_by, is_binded, is_removed, remark)
+        VALUES (#{productId}, #{productSN}, #{deviceSN}, #{protocolSN}, 1,
+                #{templateId}, #{customerAccount}, #{temperatureUpperBound},
+                #{temperatureLowerBound}, #{voltageUpperBound}, #{voltageLowerBound},
+                #{pressureUpperBound}, #{pressureLowerBound},
+                #{localAtmosphericPressure}, #{longitude}, #{latitude}, now(),
+                #{updateTime}, #{updateBy}, #{deleteTime}, #{deleteBy},
+                1, 0, #{remark});
+    </insert>
+
+    <select id="checkDeviceSNAndPipelineSN" resultMap="deviceResultMap">
+        <include refid="commonQueryColumns"/>
+        WHERE is_removed = 0 AND is_binded = 1
+        AND device_sn = #{deviceSN} AND product_sn = #{pipelineSN}
+    </select>
+</mapper>

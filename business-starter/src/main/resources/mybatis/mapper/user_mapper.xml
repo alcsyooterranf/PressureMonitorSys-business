@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.IUserMapper">
+    <resultMap id="userResultMap" type="org.pms.infrastructure.mapper.po.UserPO">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="phone" column="phone"/>
+        <result property="locked" column="is_locked" javaType="java.lang.Boolean"/>
+        <result property="removed" column="is_removed" javaType="java.lang.Boolean"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="deleteTime" column="delete_time"/>
+        <result property="deleteBy" column="delete_by"/>
+    </resultMap>
+
+    <resultMap id="userRoleResultMap" type="org.pms.infrastructure.mapper.pojo.UserInfo">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="phone" column="phone"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="rolename"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="deleteTime" column="delete_time"/>
+        <result property="deleteBy" column="delete_by"/>
+    </resultMap>
+
+    <select id="selectUserById" resultMap="userResultMap" parameterType="Long">
+        SELECT id, username, password
+        FROM pressuremonitorsys.r_user
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectUserIdByName" resultType="java.lang.Long">
+        SELECT u.id
+        FROM pressuremonitorsys.r_user u
+        WHERE is_removed = 0
+          AND username = #{username}
+    </select>
+
+    <select id="selectRoleNameByName" resultType="java.lang.String">
+        SELECT r.name
+        FROM pressuremonitorsys.r_user u
+                 INNER JOIN pressuremonitorsys.r_user_role ur ON u.id = ur.user_id
+                 INNER JOIN pressuremonitorsys.r_role r ON ur.role_id = r.id
+        WHERE u.username = #{username};
+    </select>
+
+    <select id="selectRoleNameByUserId" resultType="java.lang.String">
+        SELECT r.name
+        FROM pressuremonitorsys.r_user u
+                 INNER JOIN pressuremonitorsys.r_user_role ur ON u.id = ur.user_id
+                 INNER JOIN pressuremonitorsys.r_role r ON ur.role_id = r.id
+        WHERE u.id = #{userId};
+    </select>
+
+    <select id="selectAuthoritiesByName" resultType="java.lang.String">
+        SELECT p.name
+        FROM pressuremonitorsys.r_user u
+                 INNER JOIN pressuremonitorsys.r_user_role ur ON u.id = ur.user_id
+                 INNER JOIN pressuremonitorsys.r_role_permission rp ON ur.role_id = rp.role_id
+                 INNER JOIN pressuremonitorsys.r_permission p ON rp.permission_id = p.id
+        WHERE u.username = #{name}
+          AND u.is_removed = 0
+          AND u.is_locked = 0;
+    </select>
+
+    <insert id="insertUser" parameterType="org.pms.infrastructure.mapper.po.UserPO" useGeneratedKeys="true"
+            keyProperty="userPO.id">
+        INSERT INTO pressuremonitorsys.r_user (username, password, phone, create_by, create_time)
+        VALUES (#{userPO.username}, #{userPO.password}, #{userPO.phone}, #{operatorName}, now())
+    </insert>
+
+    <update id="updateUser" parameterType="org.pms.infrastructure.mapper.po.UserPO">
+        UPDATE pressuremonitorsys.r_user
+        <set>
+            <if test="userPO.username != null">
+                username = #{userPO.username},
+            </if>
+            <if test="userPO.phone != null">
+                phone = #{userPO.phone},
+            </if>
+            <if test="userPO.password != null">
+                `password` = #{userPO.password},
+            </if>
+            update_time = now(),
+            update_by = #{operatorName},
+        </set>
+        WHERE is_removed = 0
+        AND is_locked = 0
+        AND id = #{userPO.id}
+    </update>
+
+    <update id="deleteUserById">
+        UPDATE
+            pressuremonitorsys.r_user
+        SET is_removed  = 1,
+            delete_time = now(),
+            delete_by   = #{operatorName}
+        WHERE is_removed = 0
+          AND id = #{userId}
+    </update>
+
+    <update id="deleteUserByName" parameterType="String">
+        UPDATE
+            pressuremonitorsys.r_user
+        SET is_removed = 1
+        WHERE is_removed = 0
+          AND username = #{name}
+    </update>
+
+    <update id="updateUserPassword">
+        UPDATE pressuremonitorsys.r_user
+        SET password    = #{newPassword},
+            update_time = now(),
+            update_by   = #{operatorName}
+        WHERE is_removed = 0
+          AND id = #{userId}
+    </update>
+
+    <select id="selectUserPasswordById" resultType="java.lang.String">
+        SELECT u.password
+        FROM pressuremonitorsys.r_user u
+        WHERE is_removed = 0
+          AND id = #{userId}
+    </select>
+
+    <select id="selectUserByName" resultMap="userResultMap" parameterType="String">
+        SELECT id,
+               username,
+               password,
+               phone,
+               is_locked,
+               create_time,
+               create_by,
+               update_time,
+               update_by,
+               delete_time,
+               delete_by,
+               is_removed
+        FROM pressuremonitorsys.r_user
+        WHERE is_removed = 0
+          AND username = #{username}
+    </select>
+
+    <select id="queryUserInfoCount" resultType="java.lang.Long">
+        select count(*)
+        FROM pressuremonitorsys.r_user u
+        INNER JOIN pressuremonitorsys.r_user_role ur ON u.id = ur.user_id
+        INNER JOIN pressuremonitorsys.r_role r ON r.id = ur.role_id
+        WHERE u.is_removed = 0 AND u.is_locked = 0 AND r.is_removed = 0
+        <if test="startTime != null">
+            AND date_format(u.create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(u.create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+    </select>
+
+    <select id="queryUserInfoList" resultMap="userRoleResultMap">
+        SELECT u.id, u.username, u.phone, r.id as role_id, r.name as rolename,
+        u.create_time, u.create_by, u.update_time, u.update_by, u.delete_time,
+        u.delete_by
+        FROM pressuremonitorsys.r_user u
+        INNER JOIN pressuremonitorsys.r_user_role ur ON u.id = ur.user_id
+        INNER JOIN pressuremonitorsys.r_role r ON r.id = ur.role_id
+        WHERE u.is_removed = 0 AND u.is_locked = 0 AND r.is_removed = 0
+        <if test="startTime != null">
+            AND date_format(u.create_time, '%y-%m-%d') <![CDATA[>=]]> date_format(#{startTime}, '%y-%m-%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(u.create_time, '%y-%m-%d') <![CDATA[<=]]> date_format(#{endTime}, '%y-%m-%d')
+        </if>
+        ORDER BY u.create_time DESC
+        <if test="pageBegin != null and pageEnd != null">
+            limit #{pageBegin}, #{pageEnd}
+        </if>
+    </select>
+</mapper>
