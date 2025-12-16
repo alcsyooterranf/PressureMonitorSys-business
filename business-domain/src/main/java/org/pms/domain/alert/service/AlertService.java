@@ -149,8 +149,6 @@ public class AlertService {
 		return AlertMessage.builder()
 				.id(data.getId())
 				.deviceSN(data.getDeviceSN())
-//				.productId(data.getPipelineId())
-//				.productSN(data.getPipelineSN())
 				.pressure(data.getPressure())
 				.pressureUpperBound(device.getPressureUpperBound())
 				.pressureLowerBound(device.getPressureLowerBound())

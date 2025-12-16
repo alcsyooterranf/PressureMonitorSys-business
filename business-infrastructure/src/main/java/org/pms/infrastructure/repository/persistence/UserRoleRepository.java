@@ -2,8 +2,8 @@ package org.pms.infrastructure.repository.persistence;
 
 import com.pms.types.AppException;
 import com.pms.types.ResponseCode;
-import org.pms.domain.auth.model.entity.UserRoleEntity;
-import org.pms.domain.auth.repository.IUserRoleRepository;
+import org.pms.domain.rbac.model.entity.UserRoleEntity;
+import org.pms.domain.rbac.repository.IUserRoleRepository;
 import org.pms.infrastructure.adapter.AuthConverter;
 import org.pms.infrastructure.mapper.IUserRoleMapper;
 import org.pms.infrastructure.mapper.po.UserRolePO;

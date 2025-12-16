@@ -34,7 +34,7 @@ public class DeviceDataController {
 	@Resource
 	private IPipelineService pipelineService;
 	
-	@RequestMapping(value = "query_device_data_by_conditions", method = RequestMethod.POST)
+	@RequestMapping(value = "query", method = RequestMethod.POST)
 	public HttpResponse<PageResponse<DeviceDataQueryView>> queryDeviceDataByConditions(@RequestBody DeviceDataQueryCondition request) {
 		PageResponse<DeviceDataQueryView> deviceDataViewPage = deviceDataQueryService.queryDeviceDataPage(request);
 		
@@ -45,7 +45,7 @@ public class DeviceDataController {
 				.build();
 	}
 	
-	@RequestMapping(value = "alter_device_data_by_id", method = RequestMethod.POST)
+	@RequestMapping(value = "alter", method = RequestMethod.POST)
 	public HttpResponse<String> alterDeviceDataById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 													@RequestParam @Min(1) Long id) throws JsonProcessingException {
 		deviceDataService.updateStatusById(id, securityContextEncoded);
@@ -55,7 +55,7 @@ public class DeviceDataController {
 				.build();
 	}
 	
-	@RequestMapping(value = "delete_device_data_by_id", method = RequestMethod.POST)
+	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public HttpResponse<String> deleteDeviceDataById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 													 @RequestParam @Min(1) Long id) throws JsonProcessingException {
 		deviceDataService.deleteDeviceDataById(id, securityContextEncoded);

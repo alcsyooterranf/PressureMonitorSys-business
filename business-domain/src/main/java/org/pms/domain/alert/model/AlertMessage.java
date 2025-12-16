@@ -51,14 +51,14 @@ public class AlertMessage {
     private String deviceSN;
 
     /**
-     * 产品ID
+     * 管道ID
      */
-    private Long productId;
+    private Long pipelineId;
 
     /**
-     * 产品序列号
+     * 管道序列号
      */
-    private String productSN;
+    private String pipelineSN;
 
     /**
      * 当前压力值(Pa)

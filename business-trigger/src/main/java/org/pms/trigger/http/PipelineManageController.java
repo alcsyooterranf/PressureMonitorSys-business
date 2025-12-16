@@ -31,7 +31,7 @@ public class PipelineManageController {
 	@Resource
 	private IPipelineQueryService pipelineQueryService;
 	
-	@RequestMapping(value = "query_pipeline_by_conditions", method = RequestMethod.POST)
+	@RequestMapping(value = "query", method = RequestMethod.POST)
 	public HttpResponse<PageResponse<PipelineQueryView>> queryPipelineByConditions(@RequestBody PipelineQueryCondition request) {
 		PageResponse<PipelineQueryView> pipelineViewPage = pipelineQueryService.queryPipelineViewPage(request);
 		return HttpResponse.<PageResponse<PipelineQueryView>>builder()
@@ -41,7 +41,7 @@ public class PipelineManageController {
 				.build();
 	}
 	
-	@RequestMapping(value = "delete_pipeline_by_id", method = RequestMethod.POST)
+	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public HttpResponse<String> deletePipelineById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 												   @RequestParam @Min(1) Long id) throws JsonProcessingException {
 		pipelineService.deletePipelineById(id, securityContextEncoded);
@@ -51,7 +51,7 @@ public class PipelineManageController {
 				.build();
 	}
 	
-	@RequestMapping(value = "update_pipeline", method = RequestMethod.POST)
+	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public HttpResponse<String> updatePipeline(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 											   @RequestBody @Valid PipelineUpdateReq pipelineUpdateReq) throws JsonProcessingException {
 		pipelineService.updatePipeline(pipelineUpdateReq, securityContextEncoded);
@@ -61,8 +61,8 @@ public class PipelineManageController {
 				.build();
 	}
 	
-	@RequestMapping(value = "add_pipeline", method = RequestMethod.POST)
-	public HttpResponse<String> addPipeline(@RequestBody PipelineInsertReq pipelineInsertReq) {
+	@RequestMapping(value = "create", method = RequestMethod.POST)
+	public HttpResponse<String> createPipeline(@RequestBody PipelineInsertReq pipelineInsertReq) {
 		pipelineService.addPipeline(pipelineInsertReq);
 		return HttpResponse.<String>builder()
 				.code(ResponseCode.SUCCESS.getCode())

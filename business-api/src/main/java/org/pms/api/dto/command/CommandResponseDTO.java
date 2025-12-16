@@ -35,9 +35,9 @@ public final class CommandResponseDTO implements Serializable {
 	 */
 	private String deviceId;
 	/**
-	 * 产品ID
+	 * 管道ID
 	 */
-	private String productId;
+	private String pipelineId;
 	/**
 	 * 任务ID
 	 */

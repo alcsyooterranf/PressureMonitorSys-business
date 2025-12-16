@@ -46,7 +46,7 @@ public class DeviceRepository implements IDeviceRepository {
 						ResponseCode.DEVICE_ID_ERROR.getMessage());
 			}
 			// 同步更新安装地址location
-			updateCnt = pipelineMapper.updateLocationById(operatorName, deviceUpdateReq.getProductId(),
+			updateCnt = pipelineMapper.updateLocationById(operatorName, deviceUpdateReq.getPipelineId(),
 					deviceUpdateReq.getLocation());
 			if (1 != updateCnt) {
 				// 未更新成功则回滚

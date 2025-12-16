@@ -32,6 +32,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * @version 1.0
  * @since 2025-12-15
  */
+// TODO: business服务内部校验来自网关的Header
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

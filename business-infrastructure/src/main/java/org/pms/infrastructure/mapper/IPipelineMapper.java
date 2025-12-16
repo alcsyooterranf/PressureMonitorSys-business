@@ -14,7 +14,7 @@ public interface IPipelineMapper {
 	
 	List<PipelinePO> queryPipelineList(PipelineQueryCondition queryCondition);
 	
-	int deleteProductById(String operatorName, Long id);
+	int deletePipelineById(String operatorName, Long id);
 	
 	List<PipelinePO> queryByIdList(List<Long> ids);
 	

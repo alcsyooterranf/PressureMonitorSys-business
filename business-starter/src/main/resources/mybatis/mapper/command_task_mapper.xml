@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.ICommandTaskMapper">
+    <resultMap id="commandTaskResultMap" type="org.pms.infrastructure.mapper.po.CommandTaskPO">
+        <id property="id" column="id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="pipelineId" column="pipeline_id"/>
+        <result property="serviceIdentifier" column="service_identifier"/>
+        <result property="name" column="name"/>
+        <result property="args" column="args"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 插入指令任务 -->
+    <insert id="insert" parameterType="org.pms.infrastructure.mapper.po.CommandTaskPO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_command_task (
+            tenant_id,
+            pipeline_id,
+            service_identifier,
+            name,
+            args,
+            create_by,
+            create_time,
+            update_time
+        ) VALUES (
+            #{tenantId},
+            #{pipelineId},
+            #{serviceIdentifier},
+            #{name},
+            #{args},
+            #{createBy},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" resultMap="commandTaskResultMap">
+        SELECT id, tenant_id, pipeline_id, service_identifier, name, args, create_by, create_time, update_time
+        FROM t_command_task
+        WHERE id = #{id}
+    </select>
+
+</mapper>

@@ -14,6 +14,8 @@ import org.pms.infrastructure.mapper.po.PipelinePO;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
+
 @Slf4j
 @Repository
 public class PipelineRepository implements IPipelineRepository {
@@ -28,10 +30,10 @@ public class PipelineRepository implements IPipelineRepository {
 	private TransactionTemplate transactionTemplate;
 	
 	@Override
-	public void deleteProductById(Long id, String operatorName) {
+	public void deletePipelineById(Long id, String operatorName) {
 		transactionTemplate.execute(status -> {
 			// 1. 先删管道
-			int deleteCnt = pipelineMapper.deleteProductById(operatorName, id);
+			int deleteCnt = pipelineMapper.deletePipelineById(operatorName, id);
 			if (1 != deleteCnt) {
 				status.setRollbackOnly();
 				throw new AppException(ResponseCode.PRODUCT_ID_ERROR.getCode(),
@@ -80,5 +82,11 @@ public class PipelineRepository implements IPipelineRepository {
 		PipelinePO pipelinePO = pipelineConverter.insertReq2PO(pipelineInsertReq);
 		pipelineMapper.insertProduct(pipelinePO);
 	}
-	
+
+	@Override
+	public boolean isPipelineExist(Long pipelineId) {
+		List<Long> pipelineIds = pipelineMapper.queryIdsList();
+		return pipelineIds.contains(pipelineId);
+	}
+
 }

@@ -31,7 +31,7 @@ public class DeviceManageController {
 	@Resource
 	private IDeviceQueryService deviceQueryService;
 	
-	@RequestMapping(value = "query_device_by_conditions", method = RequestMethod.POST)
+	@RequestMapping(value = "query", method = RequestMethod.POST)
 	public HttpResponse<PageResponse<DeviceQueryView>> queryDeviceByConditions(@RequestBody DeviceQueryCondition request) {
 		PageResponse<DeviceQueryView> deviceViewPage = deviceQueryService.queryDevicePage(request);
 		
@@ -42,7 +42,7 @@ public class DeviceManageController {
 				.build();
 	}
 	
-	@RequestMapping(value = "delete_device_by_id", method = RequestMethod.POST)
+	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public HttpResponse<String> deleteDeviceById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 												 @RequestParam @Min(1) Long id) throws JsonProcessingException {
 		deviceService.deleteDeviceById(id, securityContextEncoded);
@@ -52,7 +52,7 @@ public class DeviceManageController {
 				.build();
 	}
 	
-	@RequestMapping(value = "update_device", method = RequestMethod.POST)
+	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public HttpResponse<String> updateDevice(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 											 @RequestBody @Valid DeviceUpdateReq deviceUpdateReq) throws JsonProcessingException {
 		deviceService.updateDevice(deviceUpdateReq, securityContextEncoded);
@@ -63,7 +63,7 @@ public class DeviceManageController {
 		
 	}
 	
-	@RequestMapping(value = "unbind_device_by_id", method = RequestMethod.POST)
+	@RequestMapping(value = "unbind", method = RequestMethod.POST)
 	public HttpResponse<String> unbindDeviceById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
 												 @RequestParam @Min(1) Long id) throws JsonProcessingException {
 		deviceService.unbindDeviceById(id, securityContextEncoded);
@@ -73,8 +73,8 @@ public class DeviceManageController {
 				.build();
 	}
 	
-	@RequestMapping(value = "add_device", method = RequestMethod.POST)
-	public HttpResponse<String> addDevice(@RequestBody @Valid DeviceInsertReq deviceInsertReq) {
+	@RequestMapping(value = "create", method = RequestMethod.POST)
+	public HttpResponse<String> createDevice(@RequestBody @Valid DeviceInsertReq deviceInsertReq) {
 		deviceService.addDevice(deviceInsertReq);
 		return HttpResponse.<String>builder()
 				.code(ResponseCode.SUCCESS.getCode())

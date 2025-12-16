@@ -243,6 +243,13 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
+            <!-- JSON Schema Validator -->
+            <dependency>
+                <groupId>com.networknt</groupId>
+                <artifactId>json-schema-validator</artifactId>
+                <version>1.0.87</version>
+            </dependency>
+
             <!-- Common模块 - 从本地Maven仓库引用 -->
             <dependency>
                 <groupId>com.pms</groupId>

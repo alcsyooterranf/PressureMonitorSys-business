@@ -3,7 +3,7 @@ package org.pms.domain.terminal.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.pms.domain.auth.model.req.SecurityContextHeader;
+import org.pms.domain.rbac.model.req.SecurityContextHeader;
 import org.pms.api.dto.req.DeviceInsertReq;
 import org.pms.api.dto.req.DeviceUpdateReq;
 import org.pms.domain.terminal.repository.IDeviceRepository;

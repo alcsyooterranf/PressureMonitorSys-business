@@ -14,8 +14,8 @@ import java.util.Date;
 public class PipelineEntity {
 
     private Long id;
-    private Long productSN;
-    private String productName;
+    private Long pipelineSN;
+    private String pipelineName;
     private String customerAccount;
     private String location;
     private Date createTime;

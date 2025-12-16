@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DeviceInsertReq {
 	
-	private Long productId;
+	private Long pipelineId;
 	// AEP平台的productId
-	private Long productSN;
+	private Long pipelineSN;
 	private Long deviceSN;
 	// TODO: 不知道协议编号是什么意思, 使用默认值处理
 	private String protocolSN;

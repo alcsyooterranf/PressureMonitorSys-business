@@ -14,7 +14,7 @@ public class DeviceUpdateReq {
 	// 主键不能为空
 	private Long id;
 	// 产品ID不能为空
-	private Long productId;
+	private Long pipelineId;
 	private Long deviceSN;
 	private Integer status;
 	private Long templateId;

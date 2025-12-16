@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pms.infrastructure.mapper.ICommandMetaMapper">
+    <resultMap id="commandMetaResultMap" type="org.pms.infrastructure.mapper.po.CommandMetaPO">
+        <id column="id" property="id"/>
+        <result column="pipeline_id" property="pipelineId"/>
+        <result column="service_identifier" property="serviceIdentifier"/>
+        <result column="name" property="name"/>
+        <result column="version" property="version"/>
+        <result column="payload_schema" property="payloadSchema"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 插入指令元数据 -->
+    <insert id="insert" parameterType="org.pms.infrastructure.mapper.po.CommandMetaPO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_command_meta (
+            pipeline_id,
+            service_identifier,
+            name,
+            version,
+            payload_schema,
+            status,
+            remark,
+            create_time,
+            update_time
+        ) VALUES (
+            #{pipelineId},
+            #{serviceIdentifier},
+            #{name},
+            #{version},
+            #{payloadSchema},
+            #{status},
+            #{remark},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <!-- 根据ID更新指令元数据 -->
+    <update id="updateById" parameterType="org.pms.infrastructure.mapper.po.CommandMetaPO">
+        UPDATE t_command_meta
+        <set>
+            <if test="pipelineId != null">pipeline_id = #{pipelineId},</if>
+            <if test="serviceIdentifier != null">service_identifier = #{serviceIdentifier},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="version != null">version = #{version},</if>
+            <if test="payloadSchema != null">payload_schema = #{payloadSchema},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据pipeline_id和service_identifier更新 -->
+    <update id="updateByPipelineIdAndServiceIdentifier" parameterType="org.pms.infrastructure.mapper.po.CommandMetaPO">
+        UPDATE t_command_meta
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="payloadSchema != null">payload_schema = #{payloadSchema},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            version = version + 1,
+            update_time = NOW()
+        </set>
+        WHERE pipeline_id = #{pipelineId} AND service_identifier = #{serviceIdentifier}
+    </update>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" resultMap="commandMetaResultMap">
+        SELECT id, pipeline_id, service_identifier, name, version, payload_schema, status, remark, create_time, update_time
+        FROM t_command_meta
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据pipeline_id和service_identifier查询 -->
+    <select id="selectByPipelineIdAndServiceIdentifier" resultMap="commandMetaResultMap">
+        SELECT id, pipeline_id, service_identifier, name, version, payload_schema, status, remark, create_time, update_time
+        FROM t_command_meta
+        WHERE pipeline_id = #{pipelineId} AND service_identifier = #{serviceIdentifier}
+    </select>
+
+    <!-- 条件查询（分页） -->
+    <select id="selectByCondition" parameterType="org.pms.api.dto.req.CommandMetaQueryCondition" resultMap="commandMetaResultMap">
+        SELECT id, pipeline_id, service_identifier, name, version, payload_schema, status, remark, create_time, update_time
+        FROM t_command_meta
+        <where>
+            <if test="id != null">AND id = #{id}</if>
+            <if test="pipelineId != null">AND pipeline_id = #{pipelineId}</if>
+            <if test="serviceIdentifier != null and serviceIdentifier != ''">AND service_identifier = #{serviceIdentifier}</if>
+            <if test="name != null and name != ''">AND name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{pageBegin}, #{pageEnd}
+    </select>
+
+    <!-- 条件查询总数 -->
+    <select id="countByCondition" parameterType="org.pms.api.dto.req.CommandMetaQueryCondition" resultType="long">
+        SELECT COUNT(*)
+        FROM t_command_meta
+        <where>
+            <if test="id != null">AND id = #{id}</if>
+            <if test="pipelineId != null">AND pipeline_id = #{pipelineId}</if>
+            <if test="serviceIdentifier != null and serviceIdentifier != ''">AND service_identifier = #{serviceIdentifier}</if>
+            <if test="name != null and name != ''">AND name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+    </select>
+
+    <!-- 根据ID更新状态 -->
+    <update id="updateStatusById">
+        UPDATE t_command_meta
+        SET status = #{status}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

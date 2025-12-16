@@ -3,8 +3,8 @@
 <mapper namespace="org.pms.infrastructure.mapper.IDeviceMapper">
     <resultMap id="deviceResultMap" type="org.pms.infrastructure.mapper.po.DevicePO">
         <id column="id" property="id"/>
-        <result column="product_id" property="productId"/>
-        <result column="product_sn" property="productSN"/>
+        <result column="pipeline_id" property="pipelineId"/>
+        <result column="pipeline_sn" property="pipelineSN"/>
         <result column="device_sn" property="deviceSN"/>
         <result column="protocol_sn" property="protocolSN"/>
         <result column="status" property="status"/>
@@ -135,7 +135,7 @@
             update_by   = #{operatorName}
         WHERE is_removed = 0
           AND is_binded = 1
-          AND product_id = #{pipelineId}
+          AND pipeline_id = #{pipelineId}
     </update>
 
     <update id="unbindDeviceById">
@@ -152,7 +152,7 @@
         SET is_binded   = 0,
             update_time = now(),
             update_by   = #{operatorName}
-        WHERE product_id = #{pipelineId}
+        WHERE pipeline_id = #{pipelineId}
           AND is_removed = 0
     </update>
 
@@ -165,11 +165,11 @@
     <insert id="insertDevice" parameterType="org.pms.infrastructure.mapper.po.DevicePO" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO pressuremonitorsys.t_device
-        (product_id, product_sn, device_sn, protocol_sn, status, template_id, customer_account, temperature_upper_bound,
+        (pipeline_id, pipeline_sn, device_sn, protocol_sn, status, template_id, customer_account, temperature_upper_bound,
          temperature_lower_bound, voltage_upper_bound, voltage_lower_bound, pressure_upper_bound, pressure_lower_bound,
          local_atmospheric_pressure, longitude, latitude, create_time, update_time, update_by, delete_time,
          delete_by, is_binded, is_removed, remark)
-        VALUES (#{productId}, #{productSN}, #{deviceSN}, #{protocolSN}, 1,
+        VALUES (#{pipelineId}, #{pipelineSN}, #{deviceSN}, #{protocolSN}, 1,
                 #{templateId}, #{customerAccount}, #{temperatureUpperBound},
                 #{temperatureLowerBound}, #{voltageUpperBound}, #{voltageLowerBound},
                 #{pressureUpperBound}, #{pressureLowerBound},
@@ -181,6 +181,6 @@
     <select id="checkDeviceSNAndPipelineSN" resultMap="deviceResultMap">
         <include refid="commonQueryColumns"/>
         WHERE is_removed = 0 AND is_binded = 1
-        AND device_sn = #{deviceSN} AND product_sn = #{pipelineSN}
+        AND device_sn = #{deviceSN} AND pipeline_sn = #{pipelineSN}
     </select>
 </mapper>

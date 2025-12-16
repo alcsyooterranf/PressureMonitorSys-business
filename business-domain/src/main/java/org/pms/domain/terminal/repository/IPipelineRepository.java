@@ -10,7 +10,7 @@ public interface IPipelineRepository {
 	 *
 	 * @param id 产品id
 	 */
-	void deleteProductById(Long id, String operatorName);
+	void deletePipelineById(Long id, String operatorName);
 	
 	/**
 	 * 根据产品ID更新产品信息
@@ -25,5 +25,13 @@ public interface IPipelineRepository {
 	 * @param pipelineInsertReq 新增产品请求
 	 */
 	void insertProduct(PipelineInsertReq pipelineInsertReq);
-	
+
+	/**
+	 * 判断管道是否存在
+	 *
+	 * @param pipelineId 管道ID
+	 * @return 是否存在
+	 */
+	boolean isPipelineExist(Long pipelineId);
+
 }
