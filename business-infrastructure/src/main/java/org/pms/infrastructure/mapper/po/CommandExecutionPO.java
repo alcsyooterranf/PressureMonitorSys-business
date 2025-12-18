@@ -24,13 +24,14 @@ public class CommandExecutionPO {
 	private String tenantId;
 	private Long pipelineId;
 	private Long deviceId;
+	private Long deviceSN;
 	private String serviceIdentifier;
 	private Long aepTaskId;
 	private Short status;
 	private String externalErrorMsg;
 	private String requestPayload;
 	private String resultDetail;
-	private String resultCallback;
+	private String lastRawCallback;
 	private Date sentTime;
 	private Date lastCallbackTime;
 	private Date createTime;

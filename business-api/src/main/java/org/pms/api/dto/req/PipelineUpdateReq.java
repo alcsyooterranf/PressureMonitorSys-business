@@ -13,7 +13,7 @@ public class PipelineUpdateReq {
 	
 	// 主键不能为空
 	private Long id;
-	private String productName;
+	private String pipelineName;
 	private String location;
 	private String longitude;
 	private String latitude;

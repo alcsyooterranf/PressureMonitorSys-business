@@ -1,21 +1,27 @@
 package org.pms.domain.command.service.impl;
 
-import com.pms.types.AppException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.pms.api.dto.req.CommandMetaInsertReq;
-import org.pms.api.dto.req.CommandMetaUpdateReq;
+import org.pms.domain.command.model.command.CreateCommandMetaCommand;
+import org.pms.domain.command.model.command.UpdateCommandMetaCommand;
 import org.pms.domain.command.repository.ICommandMetaRepository;
 import org.pms.domain.command.service.CommandMetaValidationService;
 import org.pms.domain.command.service.ICommandMetaService;
 import org.pms.domain.terminal.repository.IPipelineRepository;
+import org.pms.types.BizCode;
+import org.pms.types.exception.BizException;
 import org.springframework.stereotype.Service;
 
 /**
+ * 指令元数据服务实现
+ * <p>
+ * 重构说明：
+ * - 使用Domain层的Command对象替代API层的DTO
+ * - 解除对API层的依赖
+ *
  * @author alcsyooterranf
- * @program PressureMonitorSys-business
- * @description 指令元数据服务实现
- * @create 2025/12/15
+ * @author refactor
+ * @date 2025/12/15
  */
 @Slf4j
 @Service
@@ -29,33 +35,33 @@ public class CommandMetaService implements ICommandMetaService {
 	private IPipelineRepository pipelineRepository;
 
 	@Override
-	public void createCommandMeta(CommandMetaInsertReq commandMetaInsertReq) {
+	public void createCommandMeta(CreateCommandMetaCommand command) {
 		// 1. 校验pipeline_id在t_pipeline表中的存在性
-		validatePipelineExists(commandMetaInsertReq.getPipelineId());
+		validatePipelineExists(command.getPipelineId());
 
 		// 2. 校验payload_schema字段
 		validationService.validatePayloadSchema(
-				commandMetaInsertReq.getPayloadSchema(),
-				commandMetaInsertReq.getServiceIdentifier()
+				command.getPayloadSchema(),
+				command.getServiceIdentifier()
 		);
 
 		// 3. 执行创建
-		commandMetaRepository.createCommandMeta(commandMetaInsertReq);
+		commandMetaRepository.createCommandMeta(command);
 	}
 
 	@Override
-	public void updateCommandMeta(CommandMetaUpdateReq commandMetaUpdateReq) {
+	public void updateCommandMeta(UpdateCommandMetaCommand command) {
 		// 1. 校验pipeline_id在t_pipeline表中的存在性
-		validatePipelineExists(commandMetaUpdateReq.getPipelineId());
+		validatePipelineExists(command.getPipelineId());
 
 		// 2. 校验payload_schema字段
 		validationService.validatePayloadSchema(
-				commandMetaUpdateReq.getPayloadSchema(),
-				commandMetaUpdateReq.getServiceIdentifier()
+				command.getPayloadSchema(),
+				command.getServiceIdentifier()
 		);
 
 		// 3. 执行更新
-		commandMetaRepository.updateCommandMeta(commandMetaUpdateReq);
+		commandMetaRepository.updateCommandMeta(command);
 	}
 
 	@Override
@@ -75,7 +81,7 @@ public class CommandMetaService implements ICommandMetaService {
 	 */
 	private void validatePipelineExists(Long pipelineId) {
 		if (!pipelineRepository.isPipelineExist(pipelineId)) {
-			throw new AppException("ERR_BIZ_COMMAND_META_1001", "管道ID不存在");
+			throw new BizException(BizCode.COMMAND_META_PIPELINE_NOT_EXIST);
 		}
 	}
 

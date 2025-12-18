@@ -94,26 +94,27 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 重构说明：参数从deviceUpdateReq改为command（UpdateDeviceCommand） -->
     <update id="updateDevice">
         UPDATE pressuremonitorsys.t_device
-        SET device_sn                  = #{deviceUpdateReq.deviceSN},
-            status                     = #{deviceUpdateReq.status},
-            template_id                = #{deviceUpdateReq.templateId},
-            temperature_upper_bound    = #{deviceUpdateReq.temperatureUpperBound},
-            temperature_lower_bound    = #{deviceUpdateReq.temperatureLowerBound},
-            voltage_upper_bound        = #{deviceUpdateReq.voltageUpperBound},
-            voltage_lower_bound        = #{deviceUpdateReq.voltageLowerBound},
-            pressure_upper_bound       = #{deviceUpdateReq.pressureUpperBound},
-            pressure_lower_bound       = #{deviceUpdateReq.pressureLowerBound},
-            local_atmospheric_pressure = #{deviceUpdateReq.localAtmosphericPressure},
-            longitude                  = #{deviceUpdateReq.longitude},
-            latitude                   = #{deviceUpdateReq.latitude},
+        SET device_sn                  = #{command.deviceSN},
+            status                     = #{command.status},
+            template_id                = #{command.templateId},
+            temperature_upper_bound    = #{command.temperatureUpperBound},
+            temperature_lower_bound    = #{command.temperatureLowerBound},
+            voltage_upper_bound        = #{command.voltageUpperBound},
+            voltage_lower_bound        = #{command.voltageLowerBound},
+            pressure_upper_bound       = #{command.pressureUpperBound},
+            pressure_lower_bound       = #{command.pressureLowerBound},
+            local_atmospheric_pressure = #{command.localAtmosphericPressure},
+            longitude                  = #{command.longitude},
+            latitude                   = #{command.latitude},
             update_time                = now(),
             update_by                  = #{operatorName},
-            remark                     = #{deviceUpdateReq.remark}
+            remark                     = #{command.remark}
         WHERE is_removed = 0
           AND is_binded = 1
-          AND id = #{deviceUpdateReq.id}
+          AND id = #{command.id}
     </update>
 
     <select id="queryByIdList" resultMap="deviceResultMap">

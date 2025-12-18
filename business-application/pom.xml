@@ -24,7 +24,7 @@
     </dependencies>
 
     <build>
-        <finalName>PressureMonitorSys-business-application</finalName>
+        <finalName>business-application</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -33,14 +33,14 @@
             <artifactId>lombok-mapstruct-binding</artifactId>
         </dependency>
 
-        <!-- 系统模块 -->
+        <!-- Spring Cloud OpenFeign -->
         <dependency>
-            <groupId>org.pms</groupId>
-            <artifactId>business-application</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.pms</groupId>
-            <artifactId>business-domain</artifactId>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
         </dependency>
 
         <!-- ClickHouse JDBC驱动 -->
@@ -54,10 +54,22 @@
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>
         </dependency>
+
+        <!-- 系统模块 -->
+        <dependency>
+            <groupId>org.pms</groupId>
+            <artifactId>business-application</artifactId>
+        </dependency>
+
+        <!-- 微服务内部模块 - 从本地Maven仓库引用 -->
+        <dependency>
+            <groupId>org.pms</groupId>
+            <artifactId>ws-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
-        <finalName>PressureMonitorSys-business-infrastructure</finalName>
+        <finalName>business-infrastructure</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

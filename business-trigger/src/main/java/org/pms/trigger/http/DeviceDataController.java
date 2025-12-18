@@ -1,12 +1,9 @@
 package org.pms.trigger.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pms.types.Constants;
-import com.pms.types.ResponseCode;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
-import org.pms.api.common.HttpResponse;
 import org.pms.application.query.IDeviceDataQueryService;
 import org.pms.api.dto.req.DeviceDataQueryCondition;
 import org.pms.api.dto.resp.DeviceDataQueryView;
@@ -14,6 +11,9 @@ import org.pms.domain.devicedata.service.IDeviceDataService;
 import org.pms.domain.terminal.service.IDeviceService;
 import org.pms.domain.terminal.service.IPipelineService;
 import org.pms.api.common.PageResponse;
+import org.pms.types.BizCode;
+import org.pms.types.BizConstants;
+import org.pms.types.Response;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/device_data/")
 public class DeviceDataController {
 	
-	private static final String SECURITY_CONTEXT_HEADER = Constants.SECURITY_CONTEXT_HEADER;
+	private static final String SECURITY_CONTEXT_HEADER = BizConstants.SECURITY_CONTEXT_HEADER;
 	@Resource
 	private IDeviceDataService deviceDataService;
 	@Resource
@@ -35,33 +35,33 @@ public class DeviceDataController {
 	private IPipelineService pipelineService;
 	
 	@RequestMapping(value = "query", method = RequestMethod.POST)
-	public HttpResponse<PageResponse<DeviceDataQueryView>> queryDeviceDataByConditions(@RequestBody DeviceDataQueryCondition request) {
+	public Response<PageResponse<DeviceDataQueryView>> queryDeviceDataByConditions(@RequestBody DeviceDataQueryCondition request) {
 		PageResponse<DeviceDataQueryView> deviceDataViewPage = deviceDataQueryService.queryDeviceDataPage(request);
 		
-		return HttpResponse.<PageResponse<DeviceDataQueryView>>builder()
-				.code(ResponseCode.SUCCESS.getCode())
-				.message(ResponseCode.SUCCESS.getMessage())
+		return Response.<PageResponse<DeviceDataQueryView>>builder()
+				.code(BizCode.SUCCESS.getCode())
+				.message(BizCode.SUCCESS.getMessage())
 				.data(deviceDataViewPage)
 				.build();
 	}
 	
 	@RequestMapping(value = "alter", method = RequestMethod.POST)
-	public HttpResponse<String> alterDeviceDataById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
-													@RequestParam @Min(1) Long id) throws JsonProcessingException {
+	public Response<String> alterDeviceDataById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
+												@RequestParam @Min(1) Long id) throws JsonProcessingException {
 		deviceDataService.updateStatusById(id, securityContextEncoded);
-		return HttpResponse.<String>builder()
-				.code(ResponseCode.SUCCESS.getCode())
-				.message(ResponseCode.SUCCESS.getMessage())
+		return Response.<String>builder()
+				.code(BizCode.SUCCESS.getCode())
+				.message(BizCode.SUCCESS.getMessage())
 				.build();
 	}
 	
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
-	public HttpResponse<String> deleteDeviceDataById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
-													 @RequestParam @Min(1) Long id) throws JsonProcessingException {
+	public Response<String> deleteDeviceDataById(@RequestHeader(SECURITY_CONTEXT_HEADER) String securityContextEncoded,
+												 @RequestParam @Min(1) Long id) throws JsonProcessingException {
 		deviceDataService.deleteDeviceDataById(id, securityContextEncoded);
-		return HttpResponse.<String>builder()
-				.code(ResponseCode.SUCCESS.getCode())
-				.message(ResponseCode.SUCCESS.getMessage())
+		return Response.<String>builder()
+				.code(BizCode.SUCCESS.getCode())
+				.message(BizCode.SUCCESS.getMessage())
 				.build();
 	}
 	

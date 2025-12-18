@@ -183,7 +183,6 @@
                 <artifactId>sdkpackage</artifactId>
                 <version>1.0</version>
             </dependency>
-            <!-- ctg-ag-sdk-core -->
             <dependency>
                 <groupId>com.ctg.ag</groupId>
                 <artifactId>sdkcore</artifactId>
@@ -250,11 +249,16 @@
                 <version>1.0.87</version>
             </dependency>
 
-            <!-- Common模块 - 从本地Maven仓库引用 -->
+            <!-- 微服务内部模块 - 从本地Maven仓库引用 -->
             <dependency>
-                <groupId>com.pms</groupId>
-                <artifactId>common-auth-spring-boot-starter</artifactId>
-                <version>1.0.8</version>
+                <groupId>org.pms</groupId>
+                <artifactId>ws-api</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.pms</groupId>
+                <artifactId>common-types</artifactId>
+                <version>1.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -283,21 +287,21 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/PressureMonitorSys-backend-boot -Xloggc:/export/Logs/PressureMonitorSys-backend-boot/gc-PressureMonitorSys-backend-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/PressureMonitorSys-business-boot -Xloggc:/export/Logs/PressureMonitorSys-business-boot/gc-PressureMonitorSys-business-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
                 <profileActive>dev</profileActive>
             </properties>
         </profile>
         <profile>
             <id>test</id>
             <properties>
-                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/PressureMonitorSys-backend-boot -Xloggc:/export/Logs/PressureMonitorSys-backend-boot/gc-PressureMonitorSys-backend-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/PressureMonitorSys-business-boot -Xloggc:/export/Logs/PressureMonitorSys-business-boot/gc-PressureMonitorSys-business-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
                 <profileActive>test</profileActive>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
-                <java_jvm>-Xms6G -Xmx6G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=release -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/fq-mall-activity-app -Xloggc:/export/Logs/PressureMonitorSys-backend-boot/gc-PressureMonitorSys-backend-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms6G -Xmx6G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=release -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/fq-mall-activity-app -Xloggc:/export/Logs/PressureMonitorSys-business-boot/gc-PressureMonitorSys-business-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
                 <profileActive>prod</profileActive>
             </properties>
         </profile>

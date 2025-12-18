@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PipelineInsertReq {
 
-    private Long productSN;
-    private String productName;
+    private Long pipelineSN;
+    private String pipelineName;
     private String customerAccount;
     private String location;
     private String remark;

@@ -25,13 +25,14 @@ public class CommandExecutionEntity {
 	private String tenantId;
 	private Long pipelineId;
 	private Long deviceId;
+	private Long deviceSN;
 	private String serviceIdentifier;
 	private Long aepTaskId;
 	private CommandExecutionStatusVO status;
 	private String externalErrorMsg;
 	private String requestPayload;
 	private String resultDetail;
-	private String resultCallback;
+	private String lastRawCallback;
 	private Date sentTime;
 	private Date lastCallbackTime;
 	private Date createTime;

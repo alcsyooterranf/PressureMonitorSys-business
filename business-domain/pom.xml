@@ -96,20 +96,16 @@
             <groupId>org.pms</groupId>
             <artifactId>business-types</artifactId>
         </dependency>
+
+        <!-- 公共模块 -->
         <dependency>
             <groupId>org.pms</groupId>
-            <artifactId>business-api</artifactId>
-        </dependency>
-
-        <!-- Common模块 - 从本地Maven仓库引用 -->
-        <dependency>
-            <groupId>com.pms</groupId>
-            <artifactId>common-auth-spring-boot-starter</artifactId>
+            <artifactId>common-types</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>PressureMonitorSys-business-domain</finalName>
+        <finalName>business-domain</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

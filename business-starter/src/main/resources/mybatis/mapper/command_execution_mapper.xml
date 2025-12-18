@@ -7,13 +7,14 @@
         <result property="tenantId" column="tenant_id"/>
         <result property="pipelineId" column="pipeline_id"/>
         <result property="deviceId" column="device_id"/>
+        <result property="deviceSN" column="device_sn"/>
         <result property="serviceIdentifier" column="service_identifier"/>
         <result property="aepTaskId" column="aep_task_id"/>
         <result property="status" column="status"/>
         <result property="externalErrorMsg" column="external_error_msg"/>
         <result property="requestPayload" column="request_payload"/>
         <result property="resultDetail" column="result_detail"/>
-        <result property="resultCallback" column="result_callback"/>
+        <result property="lastRawCallback" column="last_raw_callback"/>
         <result property="sentTime" column="sent_time"/>
         <result property="lastCallbackTime" column="last_callback_time"/>
         <result property="createTime" column="create_time"/>
@@ -21,67 +22,84 @@
     </resultMap>
 
     <!-- 插入指令执行记录 -->
-    <insert id="insert" parameterType="org.pms.infrastructure.mapper.po.CommandExecutionPO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO t_command_execution (
-            command_task_id,
-            tenant_id,
-            pipeline_id,
-            device_id,
-            service_identifier,
-            aep_task_id,
-            status,
-            external_error_msg,
-            request_payload,
-            result_detail,
-            result_callback,
-            sent_time,
-            last_callback_time,
-            create_time,
-            update_time
-        ) VALUES (
-            #{commandTaskId},
-            #{tenantId},
-            #{pipelineId},
-            #{deviceId},
-            #{serviceIdentifier},
-            #{aepTaskId},
-            #{status},
-            #{externalErrorMsg},
-            #{requestPayload},
-            #{resultDetail},
-            #{resultCallback},
-            #{sentTime},
-            #{lastCallbackTime},
-            NOW(),
-            NOW()
-        )
+    <insert id="insert" parameterType="org.pms.infrastructure.mapper.po.CommandExecutionPO" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_command_execution (command_task_id,
+                                         tenant_id,
+                                         pipeline_id,
+                                         device_id,
+                                         device_sn,
+                                         service_identifier,
+                                         aep_task_id,
+                                         status,
+                                         external_error_msg,
+                                         request_payload,
+                                         result_detail,
+                                         last_raw_callback,
+                                         sent_time,
+                                         last_callback_time,
+                                         create_time,
+                                         update_time)
+        VALUES (#{commandTaskId},
+                #{tenantId},
+                #{pipelineId},
+                #{deviceId},
+                #{deviceSN},
+                #{serviceIdentifier},
+                #{aepTaskId},
+                #{status},
+                #{externalErrorMsg},
+                #{requestPayload},
+                #{resultDetail},
+                #{lastRawCallback},
+                #{sentTime},
+                #{lastCallbackTime},
+                NOW(),
+                NOW())
     </insert>
 
     <!-- 根据aepTaskId和deviceId查询 -->
     <select id="selectByAepTaskIdAndDeviceId" resultMap="commandExecutionResultMap">
-        SELECT id, command_task_id, tenant_id, pipeline_id, device_id, service_identifier, aep_task_id, status,
-               external_error_msg, request_payload, result_detail, result_callback, sent_time, last_callback_time,
-               create_time, update_time
+        SELECT id,
+               command_task_id,
+               tenant_id,
+               pipeline_id,
+               device_id,
+               service_identifier,
+               aep_task_id,
+               status,
+               external_error_msg,
+               request_payload,
+               result_detail,
+               last_raw_callback,
+               sent_time,
+               last_callback_time,
+               create_time,
+               update_time
         FROM t_command_execution
-        WHERE aep_task_id = #{aepTaskId} AND device_id = #{deviceId}
+        WHERE aep_task_id = #{aepTaskId}
+          AND device_id = #{deviceId}
     </select>
 
     <!-- 更新状态 -->
     <update id="updateStatus">
         UPDATE t_command_execution
-        SET status = #{status}, update_time = NOW()
-        WHERE aep_task_id = #{aepTaskId} AND device_id = #{deviceId}
+        SET status      = #{status},
+            update_time = NOW()
+        WHERE aep_task_id = #{aepTaskId}
+          AND device_id = #{deviceId}
     </update>
 
     <!-- 更新执行结果 -->
     <update id="updateResult" parameterType="org.pms.infrastructure.mapper.po.CommandExecutionPO">
         UPDATE t_command_execution
-        SET status = #{status},
-            result_detail = #{resultDetail},
-            result_callback = #{resultCallback},
+        SET status             = #{status},
+            result_detail      = #{resultDetail},
+            last_raw_callback  = #{lastRawCallback},
             last_callback_time = #{lastCallbackTime},
-            update_time = NOW()
-        WHERE aep_task_id = #{aepTaskId} AND device_id = #{deviceId}
+            update_time        = NOW()
+        WHERE aep_task_id = #{aepTaskId}
+          AND device_id = #{deviceId}
     </update>
 
 </mapper>

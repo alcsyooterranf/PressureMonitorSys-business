@@ -1,5 +1,5 @@
 spring:
   config:
-    name: PressureMonitorSys-backend-app
+    name: PressureMonitorSys-business-app
   profiles:
     active: $profileActive$

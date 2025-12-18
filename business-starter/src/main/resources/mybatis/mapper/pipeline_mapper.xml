@@ -79,15 +79,16 @@
         </if>
     </select>
 
+    <!-- 重构说明：参数从pipelineUpdateReq改为command（UpdatePipelineCommand） -->
     <update id="updatePipeline">
         UPDATE pressuremonitorsys.t_pipeline
-        SET pipeline_name = #{pipelineUpdateReq.pipelineName},
-            location     = #{pipelineUpdateReq.location},
-            update_time  = now(),
-            update_by    = #{operatorName},
-            remark       = #{pipelineUpdateReq.remark}
+        SET pipeline_name = #{command.pipelineName},
+            location      = #{command.location},
+            update_time   = now(),
+            update_by     = #{operatorName},
+            remark        = #{command.remark}
         WHERE is_removed = 0
-          AND id = #{pipelineUpdateReq.id}
+          AND id = #{command.id}
     </update>
 
     <update id="updateLocationById">
@@ -101,12 +102,28 @@
 
     <insert id="insertPipeline" parameterType="org.pms.infrastructure.mapper.po.PipelinePO" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO pressuremonitorsys.t_pipeline
-        (pipeline_sn, pipeline_name, customer_account, location, create_time, update_time, update_by, delete_time,
-         delete_by, is_removed, remark)
-        VALUES (#{pipelineSN}, #{pipelineName}, #{customerAccount}, #{location},
-                now(), #{updateTime}, #{updateBy}, #{deleteTime}, #{deleteBy},
-                0, #{remark})
+        INSERT INTO pressuremonitorsys.t_pipeline (pipeline_sn,
+                                                   pipeline_name,
+                                                   customer_account,
+                                                   location,
+                                                   create_time,
+                                                   update_time,
+                                                   update_by,
+                                                   delete_time,
+                                                   delete_by,
+                                                   is_removed,
+                                                   remark)
+        VALUES (#{pipelineSN},
+                #{pipelineName},
+                #{customerAccount},
+                #{location},
+                NOW(),
+                #{updateTime},
+                #{updateBy},
+                #{deleteTime},
+                #{deleteBy},
+                0,
+                #{remark})
     </insert>
 
     <select id="queryIdsList" resultType="java.lang.Long">

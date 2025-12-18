@@ -1,13 +1,13 @@
 package org.pms.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pms.types.AppException;
-import com.pms.types.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.pms.api.common.HttpResponse;
+import org.pms.types.BizCode;
+import org.pms.types.Response;
+import org.pms.types.exception.BizException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(value = {
 			ConstraintViolationException.class, MethodArgumentNotValidException.class, BindException.class})
-	public HttpResponse<String> validationExceptionHandler(HttpServletRequest request, Exception e) {
+	public Response<String> validationExceptionHandler(HttpServletRequest request, Exception e) {
 		if (e instanceof ConstraintViolationException) {
 			log.error("异常信息: {}",
 					((ConstraintViolationException) e).getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(";")));
@@ -51,13 +51,13 @@ public class GlobalExceptionHandler {
 			log.error("异常信息: {}",
 					((BindException) e).getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining()));
 		}
-		AppException appException = new AppException(ResponseCode.ILLEGAL_PARAMETER, e);
-		return HttpResponse.<String>builder()
-				.code(appException.getCode())
-				.message(appException.getMessage())
+		BizException bizException = new BizException(BizCode.ILLEGAL_PARAMETER, e);
+		return Response.<String>builder()
+				.code(bizException.getCode())
+				.message(bizException.getMessage())
 				.build();
 	}
-	
+
 	/**
 	 * 处理业务异常
 	 *
@@ -65,15 +65,15 @@ public class GlobalExceptionHandler {
 	 * @param e       异常
 	 * @return 异常信息
 	 */
-	@ExceptionHandler(value = AppException.class)
-	public HttpResponse<String> bizExceptionHandler(HttpServletRequest request, AppException e) {
+	@ExceptionHandler(value = BizException.class)
+	public Response<String> bizExceptionHandler(HttpServletRequest request, BizException e) {
 		log.error("异常代码: {}, 异常信息: {}", e.getCode(), e.getMessage());
-		return HttpResponse.<String>builder()
+		return Response.<String>builder()
 				.code(e.getCode())
 				.message(e.getMessage())
 				.build();
 	}
-	
+
 	/**
 	 * 处理SQL异常
 	 *
@@ -83,21 +83,21 @@ public class GlobalExceptionHandler {
 	 * @return 异常信息
 	 */
 	@ExceptionHandler(value = DataAccessException.class)
-	public HttpResponse<String> sqlExceptionHandler(HttpServletRequest request, DataAccessException e) {
-		AppException appException;
+	public Response<String> sqlExceptionHandler(HttpServletRequest request, DataAccessException e) {
+		BizException bizException;
 		if (e instanceof DataIntegrityViolationException) {
-			appException = new AppException(ResponseCode.SQL_INDEX_DUPLICATE, e);
-			log.error("异常代码: {}, 异常信息: {}", appException.getCode(), appException.getMessage());
+			bizException = new BizException(BizCode.SQL_INDEX_DUPLICATE, e);
+			log.error("异常代码: {}, 异常信息: {}", bizException.getCode(), bizException.getMessage());
 		} else {
-			appException = new AppException(ResponseCode.UN_ERROR, e);
-			log.error("异常信息: {}, 原始异常: {}", e.getMessage(), e.getCause().getMessage());
+			bizException = new BizException(BizCode.UN_ERROR, e);
+			log.error("异常信息: {}, 原始异常: {}", e.getMessage(), e.getCause() != null ? e.getCause().getMessage() : "null");
 		}
-		return HttpResponse.<String>builder()
-				.code(appException.getCode())
-				.message(appException.getMessage())
+		return Response.<String>builder()
+				.code(bizException.getCode())
+				.message(bizException.getMessage())
 				.build();
 	}
-	
+
 	/**
 	 * 处理Json转化异常
 	 *
@@ -106,15 +106,15 @@ public class GlobalExceptionHandler {
 	 * @return 异常信息
 	 */
 	@ExceptionHandler(value = JsonProcessingException.class)
-	public HttpResponse<String> jsonExceptionHandler(HttpServletRequest request, JsonProcessingException e) {
-		AppException appException = new AppException(ResponseCode.JSON_PARSE_ERROR, e);
-		log.error("异常代码: {}, 异常信息: {}", appException.getCode(), appException.getMessage());
-		return HttpResponse.<String>builder()
-				.code(appException.getCode())
-				.message(appException.getMessage())
+	public Response<String> jsonExceptionHandler(HttpServletRequest request, JsonProcessingException e) {
+		BizException bizException = new BizException(BizCode.JSON_PARSE_ERROR, e);
+		log.error("异常代码: {}, 异常信息: {}", bizException.getCode(), bizException.getMessage());
+		return Response.<String>builder()
+				.code(bizException.getCode())
+				.message(bizException.getMessage())
 				.build();
 	}
-	
+
 	/**
 	 * 处理其他异常
 	 *
@@ -123,13 +123,13 @@ public class GlobalExceptionHandler {
 	 * @return 异常信息
 	 */
 	@ExceptionHandler(value = Exception.class)
-	public HttpResponse<String> jsonExceptionHandler(HttpServletRequest request, Exception e) {
-		AppException appException = new AppException(ResponseCode.UN_ERROR, e);
-		log.error("异常代码: {}, 异常信息: {}, 原始异常: {}", appException.getCode(), appException.getMessage(),
-				appException.getCause().getMessage());
-		return HttpResponse.<String>builder()
-				.code(appException.getCode())
-				.message(appException.getMessage())
+	public Response<String> otherExceptionHandler(HttpServletRequest request, Exception e) {
+		BizException bizException = new BizException(BizCode.UN_ERROR, e);
+		log.error("异常代码: {}, 异常信息: {}, 原始异常: {}", bizException.getCode(), bizException.getMessage(),
+				bizException.getCause() != null ? bizException.getCause().getMessage() : "null");
+		return Response.<String>builder()
+				.code(bizException.getCode())
+				.message(bizException.getMessage())
 				.build();
 	}
 	

@@ -1,24 +1,29 @@
 package org.pms.domain.command.repository;
 
-import org.pms.api.dto.req.CommandTaskCreateReq;
+import org.pms.domain.command.model.command.CreateCommandTaskCommand;
 import org.pms.domain.command.model.entity.CommandTaskEntity;
 
 /**
+ * 指令任务仓储接口
+ * <p>
+ * 重构说明：
+ * - 使用Domain层的Command对象替代API层的DTO
+ * - 解除对API层的依赖
+ *
  * @author alcsyooterranf
- * @program PressureMonitorSys-business
- * @description 指令任务仓储接口
- * @create 2025/12/16
+ * @author refactor
+ * @date 2025/12/16
  */
 public interface ICommandTaskRepository {
-	
+
 	/**
 	 * 创建指令任务
 	 *
-	 * @param commandTaskCreateReq 指令任务创建请求
+	 * @param command 创建指令任务命令对象
 	 * @return 任务ID
 	 */
-	Long createCommandTask(CommandTaskCreateReq commandTaskCreateReq);
-	
+	Long createCommandTask(CreateCommandTaskCommand command);
+
 	/**
 	 * 根据ID查询
 	 *
@@ -26,6 +31,6 @@ public interface ICommandTaskRepository {
 	 * @return 指令任务实体
 	 */
 	CommandTaskEntity selectById(Long id);
-	
+
 }
 
