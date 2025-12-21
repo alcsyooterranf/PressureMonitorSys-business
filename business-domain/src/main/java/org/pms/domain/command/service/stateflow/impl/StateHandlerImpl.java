@@ -1,9 +1,15 @@
 package org.pms.domain.command.service.stateflow.impl;
 
+import jakarta.annotation.Resource;
+import org.pms.domain.command.model.entity.CommandExecutionEntity;
 import org.pms.domain.command.model.valobj.CommandExecutionStatusVO;
+import org.pms.domain.command.repository.ICommandExecutionRepository;
+import org.pms.domain.command.service.stateflow.AbstractState;
+import org.pms.domain.command.service.stateflow.CommandTransitionCtx;
 import org.pms.domain.command.service.stateflow.IStateHandler;
 import org.pms.domain.command.service.stateflow.StateConfig;
-import org.pms.domain.command.service.stateflow.state.*;
+import org.pms.types.BizCode;
+import org.pms.types.Result;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,41 +20,49 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StateHandlerImpl extends StateConfig implements IStateHandler {
-
-	public StateHandlerImpl(InitializedState initializedState, SavedState savedState, SentState sentState,
-	                        DeliveredState deliveredState, CompletedState completedState,
-	                        TtlTimeoutState ttlTimeoutState, TimeoutState timeoutState) {
-		super(initializedState, savedState, sentState, deliveredState, completedState, ttlTimeoutState, timeoutState);
+	
+	@Resource
+	protected ICommandExecutionRepository commandExecutionRepository;
+	
+	private Result dispatch(CommandExecutionStatusVO target, CommandExecutionEntity ctx) {
+		// currentStatus 由 DB 决定, 为了幂等和防乱序
+		CommandExecutionStatusVO current = commandExecutionRepository.selectByAepTaskIdAndDeviceId(ctx.getAepTaskId(), ctx.getDeviceId()).getStatus();
+		AbstractState state = stateGroup.get(current);
+		
+		if (state == null) {
+			return Result.buildResult(BizCode.COMMAND_STATE_UNKNOWN);
+		}
+		return state.apply(ctx, target);
 	}
-
+	
 	@Override
-	public void saved(Long aepTaskId, Long deviceId, CommandExecutionStatusVO currentState) {
-		stateGroup.get(currentState).saved(aepTaskId, deviceId, currentState);
+	public Result onSaved(CommandExecutionEntity ctx) {
+		return dispatch(CommandExecutionStatusVO.SAVED, ctx);
 	}
-
+	
 	@Override
-	public void sent(Long aepTaskId, Long deviceId, CommandExecutionStatusVO currentState) {
-		stateGroup.get(currentState).sent(aepTaskId, deviceId, currentState);
+	public Result onSent(CommandExecutionEntity ctx) {
+		return dispatch(CommandExecutionStatusVO.SENT, ctx);
 	}
-
+	
 	@Override
-	public void delivered(Long aepTaskId, Long deviceId, CommandExecutionStatusVO currentState) {
-		stateGroup.get(currentState).delivered(aepTaskId, deviceId, currentState);
+	public Result onDelivered(CommandExecutionEntity ctx) {
+		return dispatch(CommandExecutionStatusVO.DELIVERED, ctx);
 	}
-
+	
 	@Override
-	public void completed(Long aepTaskId, Long deviceId, CommandExecutionStatusVO currentState) {
-		stateGroup.get(currentState).completed(aepTaskId, deviceId, currentState);
+	public Result onCompleted(CommandExecutionEntity ctx) {
+		return dispatch(CommandExecutionStatusVO.COMPLETED, ctx);
 	}
-
+	
 	@Override
-	public void ttlTimeout(Long aepTaskId, Long deviceId, CommandExecutionStatusVO currentState) {
-		stateGroup.get(currentState).ttlTimeout(aepTaskId, deviceId, currentState);
+	public Result onTtlTimeout(CommandExecutionEntity ctx) {
+		return dispatch(CommandExecutionStatusVO.TTL_TIMEOUT, ctx);
 	}
-
+	
 	@Override
-	public void timeout(Long aepTaskId, Long deviceId, CommandExecutionStatusVO currentState) {
-		stateGroup.get(currentState).timeout(aepTaskId, deviceId, currentState);
+	public Result onTimeout(CommandExecutionEntity ctx) {
+		return dispatch(CommandExecutionStatusVO.TIMEOUT, ctx);
 	}
-
+	
 }

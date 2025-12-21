@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.pms.types.BizCode;
 import org.pms.types.Response;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;

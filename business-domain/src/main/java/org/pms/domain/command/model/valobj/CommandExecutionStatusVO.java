@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author alcsyooterranf
  * @program PressureMonitorSys-business
- * @description 指令执行状态枚举
+ * @description 指令执行状态枚举, 注意枚举的序号code不能乱序！！！
  * @create 2025/12/16
  */
 @Getter
@@ -15,13 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public enum CommandExecutionStatusVO {
 	
-	INITIALIZED((short) 1, "已初始化"),
-	SAVED((short) 2, "已保存"),
-	SENT((short) 3, "已发送"),
-	DELIVERED((short) 4, "已送达"),
-	COMPLETED((short) 5, "已完成"),
-	TTL_TIMEOUT((short) 6, "TTL超时"),
-	TIMEOUT((short) 7, "超时");
+	SAVED((short) 0, "指令已保存"),
+	SENT((short) 1, "指令已发送"),
+	DELIVERED((short) 2, "指令已送达"),
+	COMPLETED((short) 3, "指令已完成"),
+	TTL_TIMEOUT((short) 4, "指令TTL超时"),
+	TIMEOUT((short) 5, "指令超时");
 	
 	private Short code;
 	private String desc;
@@ -41,12 +40,24 @@ public enum CommandExecutionStatusVO {
 		return null;
 	}
 	
+	public static CommandExecutionStatusVO fromExternalResultCode(String external) {
+		if (external == null) return null;
+		return switch (external) {
+			case "SAVED" -> SAVED;
+			case "SENT" -> SENT;
+			case "DELIVERED" -> DELIVERED;
+			case "COMPLETED" -> COMPLETED;
+			case "TTL_TIMEOUT" -> TTL_TIMEOUT;
+			case "TIMEOUT" -> TIMEOUT;
+			default -> null;
+		};
+	}
+	
 	/**
 	 * 判断是否为终态
 	 */
 	public boolean isFinalState() {
 		return this == COMPLETED || this == TTL_TIMEOUT || this == TIMEOUT;
 	}
-	
 }
 

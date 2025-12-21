@@ -1,7 +1,6 @@
-package org.pms.types.exception;
+package org.pms.types;
 
 import lombok.Getter;
-import org.pms.types.BizCode;
 
 /**
  * 业务异常类

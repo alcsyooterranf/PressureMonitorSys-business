@@ -13,7 +13,7 @@ import org.pms.infrastructure.mapper.po.UserPO;
 import org.pms.infrastructure.mapper.po.UserRolePO;
 import org.pms.types.BizCode;
 import org.pms.types.BizConstants;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;

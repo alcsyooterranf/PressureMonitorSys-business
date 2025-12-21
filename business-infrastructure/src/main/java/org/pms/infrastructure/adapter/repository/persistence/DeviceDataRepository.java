@@ -12,7 +12,7 @@ import org.pms.infrastructure.mapper.IDeviceMapper;
 import org.pms.infrastructure.mapper.po.DeviceDataPO;
 import org.pms.infrastructure.mapper.po.DevicePO;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;

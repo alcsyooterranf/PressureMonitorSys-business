@@ -3,7 +3,7 @@ package org.pms.domain.rbac.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.pms.types.BizCode;
 import org.pms.types.BizConstants;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

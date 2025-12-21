@@ -18,7 +18,7 @@ import org.pms.domain.command.service.AepCommandClient;
 import org.pms.domain.command.service.CommandMetaValidationService;
 import org.pms.domain.command.service.ICommandTaskService;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -121,9 +121,8 @@ public class CommandTaskService implements ICommandTaskService {
 				.deviceSN(command.getDeviceSN())
 				.serviceIdentifier(commandTask.getServiceIdentifier())
 				.aepTaskId(aepTaskId)
-				.status(CommandExecutionStatusVO.INITIALIZED)
+				.status(CommandExecutionStatusVO.SAVED)
 				.requestPayload(commandTask.getArgs())
-				.sentTime(new Date())
 				.build();
 
 		Long executionId = commandExecutionRepository.createCommandExecution(commandExecution);
@@ -170,9 +169,8 @@ public class CommandTaskService implements ICommandTaskService {
 					.deviceId(command.getDeviceId())
 					.serviceIdentifier(commandTask.getServiceIdentifier())
 					.aepTaskId(aepTaskId)
-					.status(CommandExecutionStatusVO.INITIALIZED)
+					.status(CommandExecutionStatusVO.SAVED)
 					.requestPayload(commandTask.getArgs())
-					.sentTime(new Date())
 					.build();
 
 			Long executionId = commandExecutionRepository.createCommandExecution(commandExecution);

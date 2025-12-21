@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -26,18 +25,16 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class CommandResponseDTO implements Serializable {
+public final class CommandRespDTO implements Serializable {
 	
-	@Serial
-	private static final long serialVersionUID = 1L;
 	/**
-	 * 设备ID
+	 * 设备SN
 	 */
-	private String deviceId;
+	private String deviceSN;
 	/**
-	 * 管道ID
+	 * 管道SN
 	 */
-	private String pipelineId;
+	private String pipelineSN;
 	/**
 	 * 任务ID
 	 */
@@ -49,7 +46,7 @@ public final class CommandResponseDTO implements Serializable {
 	/**
 	 * 指令执行结果状态
 	 */
-	private CommandState commandState;
+	private String commandState;
 	/**
 	 * 时间戳
 	 */

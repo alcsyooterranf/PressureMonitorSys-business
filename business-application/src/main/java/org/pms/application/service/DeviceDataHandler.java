@@ -19,7 +19,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class SaveDeviceDataService {
+public class DeviceDataHandler {
 	
 	@Resource
 	private IDeviceDataService deviceDataService;

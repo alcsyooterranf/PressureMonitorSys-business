@@ -9,7 +9,7 @@ import org.pms.domain.command.service.CommandMetaValidationService;
 import org.pms.domain.command.service.ICommandMetaService;
 import org.pms.domain.terminal.repository.IPipelineRepository;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.stereotype.Service;
 
 /**

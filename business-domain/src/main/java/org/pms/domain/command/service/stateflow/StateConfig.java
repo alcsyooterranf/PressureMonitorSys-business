@@ -1,6 +1,7 @@
 package org.pms.domain.command.service.stateflow;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.pms.domain.command.model.valobj.CommandExecutionStatusVO;
 import org.pms.domain.command.service.stateflow.state.*;
@@ -18,32 +19,23 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class StateConfig {
-
-	private final InitializedState initializedState;
-	private final SavedState savedState;
-	private final SentState sentState;
-	private final DeliveredState deliveredState;
-	private final CompletedState completedState;
-	private final TtlTimeoutState ttlTimeoutState;
-	private final TimeoutState timeoutState;
-
-	protected Map<CommandExecutionStatusVO, AbstractState> stateGroup = new ConcurrentHashMap<>();
-
-	public StateConfig(InitializedState initializedState, SavedState savedState, SentState sentState,
-	                   DeliveredState deliveredState, CompletedState completedState,
-	                   TtlTimeoutState ttlTimeoutState, TimeoutState timeoutState) {
-		this.initializedState = initializedState;
-		this.savedState = savedState;
-		this.sentState = sentState;
-		this.deliveredState = deliveredState;
-		this.completedState = completedState;
-		this.ttlTimeoutState = ttlTimeoutState;
-		this.timeoutState = timeoutState;
-	}
-
+	
+	protected Map<Enum<CommandExecutionStatusVO>, AbstractState> stateGroup = new ConcurrentHashMap<>();
+	@Resource
+	private SavedState savedState;
+	@Resource
+	private SentState sentState;
+	@Resource
+	private DeliveredState deliveredState;
+	@Resource
+	private CompletedState completedState;
+	@Resource
+	private TtlTimeoutState ttlTimeoutState;
+	@Resource
+	private TimeoutState timeoutState;
+	
 	@PostConstruct
 	public void init() {
-		stateGroup.put(CommandExecutionStatusVO.INITIALIZED, initializedState);
 		stateGroup.put(CommandExecutionStatusVO.SAVED, savedState);
 		stateGroup.put(CommandExecutionStatusVO.SENT, sentState);
 		stateGroup.put(CommandExecutionStatusVO.DELIVERED, deliveredState);
@@ -52,9 +44,5 @@ public class StateConfig {
 		stateGroup.put(CommandExecutionStatusVO.TIMEOUT, timeoutState);
 		log.info("状态机配置初始化完成");
 	}
-
-	public AbstractState getState(CommandExecutionStatusVO status) {
-		return stateGroup.get(status);
-	}
-
+	
 }

@@ -10,7 +10,7 @@ import org.pms.infrastructure.adapter.converter.CommandMetaConverter;
 import org.pms.infrastructure.mapper.ICommandMetaMapper;
 import org.pms.infrastructure.mapper.po.CommandMetaPO;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 

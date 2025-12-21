@@ -8,7 +8,7 @@ import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

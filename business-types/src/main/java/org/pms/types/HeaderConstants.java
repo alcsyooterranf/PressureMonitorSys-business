@@ -1,4 +1,4 @@
-package org.pms.types.constants;
+package org.pms.types;
 
 /**
  * HTTP Header常量定义

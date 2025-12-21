@@ -23,7 +23,7 @@ import java.util.Date;
 @Slf4j
 @Component
 public class ApiToDomainConverter {
-
+	
 	/**
 	 * 转换设备数据：API DTO → Domain Entity
 	 *
@@ -34,13 +34,13 @@ public class ApiToDomainConverter {
 		if (apiDto == null) {
 			return null;
 		}
-
+		
 		MonitorParameterDTO payload = apiDto.getPayload();
 		if (payload == null) {
 			log.warn("设备数据payload为空, deviceId={}", apiDto.getDeviceId());
 			return null;
 		}
-
+		
 		return DeviceDataEntity.builder()
 				.tenantId(apiDto.getTenantId())
 				.deviceSN(apiDto.getDeviceId())
@@ -57,7 +57,7 @@ public class ApiToDomainConverter {
 				.removed(false)
 				.build();
 	}
-
+	
 	/**
 	 * 解析字符串为Integer
 	 * 处理可能的数字格式异常
@@ -76,6 +76,6 @@ public class ApiToDomainConverter {
 			return null;
 		}
 	}
-
+	
 }
 

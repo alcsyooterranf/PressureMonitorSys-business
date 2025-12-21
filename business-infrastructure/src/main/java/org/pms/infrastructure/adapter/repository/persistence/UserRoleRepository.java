@@ -6,7 +6,7 @@ import org.pms.infrastructure.adapter.converter.AuthConverter;
 import org.pms.infrastructure.mapper.IUserRoleMapper;
 import org.pms.infrastructure.mapper.po.UserRolePO;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.stereotype.Repository;
 
 @Repository

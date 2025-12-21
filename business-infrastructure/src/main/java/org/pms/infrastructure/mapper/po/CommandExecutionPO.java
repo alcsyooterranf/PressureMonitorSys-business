@@ -32,7 +32,6 @@ public class CommandExecutionPO {
 	private String requestPayload;
 	private String resultDetail;
 	private String lastRawCallback;
-	private Date sentTime;
 	private Date lastCallbackTime;
 	private Date createTime;
 	private Date updateTime;

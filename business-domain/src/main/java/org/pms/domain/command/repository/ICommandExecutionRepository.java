@@ -1,7 +1,6 @@
 package org.pms.domain.command.repository;
 
 import org.pms.domain.command.model.entity.CommandExecutionEntity;
-import org.pms.domain.command.model.valobj.CommandExecutionStatusVO;
 
 /**
  * @author alcsyooterranf
@@ -31,12 +30,12 @@ public interface ICommandExecutionRepository {
 	/**
 	 * 更新状态
 	 *
-	 * @param aepTaskId AEP任务ID
-	 * @param deviceId  设备ID
-	 * @param status    状态
+	 * @param expectedCode           期望状态码
+	 * @param targetCode             目标状态码
+	 * @param commandExecutionEntity 指令执行实体
 	 * @return 是否成功
 	 */
-	boolean updateStatus(Long aepTaskId, Long deviceId, CommandExecutionStatusVO status);
+	boolean updateStatus(Short expectedCode, Short targetCode, CommandExecutionEntity commandExecutionEntity);
 	
 	/**
 	 * 更新执行结果
@@ -44,7 +43,7 @@ public interface ICommandExecutionRepository {
 	 * @param commandExecutionEntity 指令执行实体
 	 * @return 是否成功
 	 */
-	boolean updateResult(CommandExecutionEntity commandExecutionEntity);
+	boolean updateTrace(CommandExecutionEntity commandExecutionEntity);
 	
 }
 

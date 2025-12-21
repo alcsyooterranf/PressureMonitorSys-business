@@ -3,7 +3,6 @@ package org.pms.infrastructure.adapter.repository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.pms.domain.command.model.entity.CommandExecutionEntity;
-import org.pms.domain.command.model.valobj.CommandExecutionStatusVO;
 import org.pms.domain.command.repository.ICommandExecutionRepository;
 import org.pms.infrastructure.adapter.converter.CommandExecutionConverter;
 import org.pms.infrastructure.mapper.ICommandExecutionMapper;
@@ -46,27 +45,30 @@ public class CommandExecutionRepository implements ICommandExecutionRepository {
 	}
 	
 	@Override
-	public boolean updateStatus(Long aepTaskId, Long deviceId, CommandExecutionStatusVO status) {
-		int rows = commandExecutionMapper.updateStatus(aepTaskId, deviceId, status.getCode());
+	public boolean updateStatus(Short expectedCode, Short targetCode, CommandExecutionEntity commandExecutionEntity) {
+		CommandExecutionPO commandExecutionPO = commandExecutionConverter.entity2po(commandExecutionEntity);
+		int rows = commandExecutionMapper.updateStatus(expectedCode, targetCode, commandExecutionPO);
 		if (rows > 0) {
-			log.info("更新指令状态成功, aepTaskId={}, deviceId={}, status={}", aepTaskId, deviceId, status);
+			log.info("更新指令状态成功, aepTaskId={}, deviceId={}, status={}",
+					commandExecutionPO.getAepTaskId(), commandExecutionPO.getDeviceId(), targetCode);
 			return true;
 		} else {
-			log.error("更新指令状态失败, aepTaskId={}, deviceId={}, status={}", aepTaskId, deviceId, status);
+			log.error("更新指令状态失败, aepTaskId={}, deviceId={}, status={}",
+					commandExecutionPO.getAepTaskId(), commandExecutionPO.getDeviceId(), targetCode);
 			return false;
 		}
 	}
 	
 	@Override
-	public boolean updateResult(CommandExecutionEntity commandExecutionEntity) {
+	public boolean updateTrace(CommandExecutionEntity commandExecutionEntity) {
 		CommandExecutionPO commandExecutionPO = commandExecutionConverter.entity2po(commandExecutionEntity);
-		int rows = commandExecutionMapper.updateResult(commandExecutionPO);
+		int rows = commandExecutionMapper.updateTrace(commandExecutionPO);
 		if (rows > 0) {
-			log.info("更新指令执行结果成功, aepTaskId={}, deviceId={}", 
+			log.info("更新指令Trace成功, aepTaskId={}, deviceId={}",
 					commandExecutionPO.getAepTaskId(), commandExecutionPO.getDeviceId());
 			return true;
 		} else {
-			log.error("更新指令执行结果失败, aepTaskId={}, deviceId={}", 
+			log.error("更新指令Trace失败, aepTaskId={}, deviceId={}",
 					commandExecutionPO.getAepTaskId(), commandExecutionPO.getDeviceId());
 			return false;
 		}

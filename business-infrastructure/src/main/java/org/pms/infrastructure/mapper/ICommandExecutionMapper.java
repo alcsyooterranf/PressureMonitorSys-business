@@ -1,7 +1,6 @@
 package org.pms.infrastructure.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.pms.infrastructure.mapper.po.CommandExecutionPO;
 
 /**
@@ -28,25 +27,25 @@ public interface ICommandExecutionMapper {
 	 * @param deviceId  设备ID
 	 * @return 指令执行PO
 	 */
-	CommandExecutionPO selectByAepTaskIdAndDeviceId(@Param("aepTaskId") Long aepTaskId, @Param("deviceId") Long deviceId);
+	CommandExecutionPO selectByAepTaskIdAndDeviceId(Long aepTaskId, Long deviceId);
 	
 	/**
 	 * 更新状态
 	 *
-	 * @param aepTaskId AEP任务ID
-	 * @param deviceId  设备ID
-	 * @param status    状态
+	 * @param expectedCode       期望状态码
+	 * @param targetCode         目标状态码
+	 * @param commandExecutionPO 指令执行PO
 	 * @return 影响行数
 	 */
-	int updateStatus(@Param("aepTaskId") Long aepTaskId, @Param("deviceId") Long deviceId, @Param("status") Short status);
+	int updateStatus(Short expectedCode, Short targetCode, CommandExecutionPO commandExecutionPO);
 	
 	/**
-	 * 更新执行结果
+	 * 更新trace
 	 *
 	 * @param commandExecutionPO 指令执行PO
 	 * @return 影响行数
 	 */
-	int updateResult(CommandExecutionPO commandExecutionPO);
+	int updateTrace(CommandExecutionPO commandExecutionPO);
 	
 }
 

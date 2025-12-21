@@ -10,7 +10,7 @@ import org.pms.infrastructure.mapper.IDeviceMapper;
 import org.pms.infrastructure.mapper.IPipelineMapper;
 import org.pms.infrastructure.mapper.po.DevicePO;
 import org.pms.types.BizCode;
-import org.pms.types.exception.BizException;
+import org.pms.types.BizException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -61,7 +61,7 @@ public class DeviceRepository implements IDeviceRepository {
 			if (1 != updateCnt) {
 				// 未更新成功则回滚
 				status.setRollbackOnly();
-				throw new BizException(BizCode.PRODUCT_ID_ERROR.getCode(), BizCode.PRODUCT_ID_ERROR.getMessage());
+				throw new BizException(BizCode.PIPELINE_ID_ERROR.getCode(), BizCode.PIPELINE_ID_ERROR.getMessage());
 			}
 			return 1;
 		});
@@ -80,7 +80,7 @@ public class DeviceRepository implements IDeviceRepository {
 		DevicePO devicePO = deviceConverter.command2PO(command);
 		List<Long> ids = pipelineMapper.queryIdsList();
 		if (!ids.contains(devicePO.getPipelineId())) {
-			throw new BizException(BizCode.PRODUCT_ID_ERROR.getCode(), BizCode.PRODUCT_ID_ERROR.getMessage());
+			throw new BizException(BizCode.PIPELINE_ID_ERROR.getCode(), BizCode.PIPELINE_ID_ERROR.getMessage());
 		}
 		deviceMapper.insertDevice(devicePO);
 	}
